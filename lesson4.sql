@@ -1,6 +1,7 @@
 /*======================================================================
 		Города, области и страны
   ======================================================================*/
+USE `db_lesson4`;
 
 CREATE OR REPLACE VIEW `moscow_region` AS
 	SELECT `cities`.`name` AS `Город`, `regions`.`name` AS `Область` , `countries`.`name` AS `Страна`
@@ -64,9 +65,20 @@ CREATE OR REPLACE VIEW `min_salary` AS
 
 SELECT * FROM `min_salary`;
 
+CREATE FUNCTION get_manager_id (firstName VARCHAR(45), lastName VARCHAR(45))
+RETURNS INT(11) DETERMINISTIC
+READS SQL DATA
+RETURN (
+	SELECT `id` FROM `employees` 
+	WHERE `first_name` = firstName AND `last_name` = lastName AND `job_title` = 'менеджер'
+    LIMIT 1
+);
+
+SELECT * FROM `employees` WHERE `id` = get_manager_id('Анна', 'Конева');
+
 /* if first and last name pair of an employee is not unique, we should at least 
 be geting some warning concerning it */
-CREATE FUNCTION `get_employee_info` (firstName VARCHAR(40), lastName VARCHAR(40))
+CREATE FUNCTION `get_employee_info` (firstName VARCHAR(45), lastName VARCHAR(45))
 RETURNS VARCHAR(100) DETERMINISTIC
 READS SQL DATA
 RETURN(
@@ -80,7 +92,7 @@ SELECT `get_employee_info` ('Алексей', 'Пушкин') AS `Информа
 
 delimiter $$
 
-CREATE PROCEDURE get_employee_fields(IN firstName VARCHAR(25), IN lastName VARCHAR(25))
+CREATE PROCEDURE get_employee_fields(IN firstName VARCHAR(45), IN lastName VARCHAR(45))
 READS SQL DATA
 BEGIN
 	SET @temp_id = (SELECT `id` FROM `employees` WHERE `first_name` = firstName AND `last_name` = lastName LIMIT 1);
