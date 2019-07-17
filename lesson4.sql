@@ -16,11 +16,18 @@ SELECT * FROM `moscow_region`;
 
 SET @fake_id := 0;
 
-CREATE FUNCTION `get_fake_id` ()
+# 1287 Setting user variables within expressions is deprecated and will be removed in a future release. 
+# Consider alternatives: 'SET variable=expression, ...', or 'SELECT expression(s) INTO variables(s)'.
+delimiter $$
+CREATE FUNCTION get_fake_id()
 RETURNS INT(11)
-RETURN(
-SELECT @fake_id := @fake_id + 1
-);
+READS SQL DATA
+BEGIN
+	SET @fake_id := @fake_id + 1;
+	RETURN @fake_id;
+END;
+$$
+delimiter ;
 
 #DROP FUNCTION `get_fake_id`;
 
@@ -97,7 +104,7 @@ READS SQL DATA
 BEGIN
 	SET @temp_id = (SELECT `id` FROM `employees` WHERE `first_name` = firstName AND `last_name` = lastName LIMIT 1);
     SELECT * FROM `employees` WHERE `id` = @temp_id;
-END
+END;
 $$
 
 delimiter ;
