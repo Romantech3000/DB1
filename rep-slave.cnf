@@ -1,0 +1,8 @@
+[mysqld]
+server-id = 2
+
+log-bin = rep-master.log
+
+binlog_do_db = db_lesson5
+
+relay-log = /var/log/mysql/relay.log

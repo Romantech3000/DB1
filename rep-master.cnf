@@ -1,0 +1,9 @@
+[mysqld]
+server-id = 1
+
+# binary log file
+log_bin = /var/log/mysql/rep-master.log
+
+# databases to replicate
+binlog_do_db = db_lesson5
+
